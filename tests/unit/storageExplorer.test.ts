@@ -94,7 +94,10 @@ describe("classifyTtl", () => {
 
   test("no TTL, or no ledger to judge it against, is 'unknown' — never a guess", () => {
     // No TTL on the entry: nothing to count down.
-    assert.deepEqual(classifyTtl(null, CURRENT_LEDGER), { tier: "unknown", remainingLedgers: null });
+    assert.deepEqual(classifyTtl(null, CURRENT_LEDGER), {
+      tier: "unknown",
+      remainingLedgers: null,
+    });
     // The latest-ledger read failed: an expiry cannot be judged without it.
     assert.deepEqual(classifyTtl(4_100, null), { tier: "unknown", remainingLedgers: null });
   });
@@ -104,10 +107,16 @@ describe("classifyTtl", () => {
 
 describe("decodeStorageEntry", () => {
   test("names the guard's own keys by their DataKey variant", () => {
-    const view = decodeFixture(persistentDataEntry(MOCK_GUARD, "Window", windowScVal({
-      total: 30n,
-      entries: [{ ts: 100n, amount: 30n }],
-    })));
+    const view = decodeFixture(
+      persistentDataEntry(
+        MOCK_GUARD,
+        "Window",
+        windowScVal({
+          total: 30n,
+          entries: [{ ts: 100n, amount: 30n }],
+        }),
+      ),
+    );
     assert.equal(view.label, "Window");
     assert.equal(view.durability, "persistent");
     assert.equal(view.present, true);
@@ -130,9 +139,9 @@ describe("decodeStorageEntry", () => {
     // what is copied cannot disagree.
     const tree = view.json;
     assert.equal(tree?.kind, "map");
-    const total = (tree as { entries: Array<{ key: string; value: { text: string } }> }).entries.find(
-      (entry) => entry.key === "total",
-    );
+    const total = (
+      tree as { entries: Array<{ key: string; value: { text: string } }> }
+    ).entries.find((entry) => entry.key === "total");
     assert.equal(total?.value.text, "12345678901234567890");
     // And the rendering itself is valid JSON, not a JS-object print.
     assert.deepEqual(JSON.parse(view.jsonText ?? "{}"), {
@@ -182,9 +191,11 @@ describe("decodeStorageEntry", () => {
     // string the RPC accepts, so the id can be re-read directly.
     assert.equal(view.id, view.keyXdr);
     assert.equal(
-      (xdr.LedgerKey.fromXDR(view.id, "base64") as unknown as {
-        contractData: xdr.LedgerKeyContractData;
-      }).contractData.durability.name,
+      (
+        xdr.LedgerKey.fromXDR(view.id, "base64") as unknown as {
+          contractData: xdr.LedgerKeyContractData;
+        }
+      ).contractData.durability.name,
       "persistent",
     );
   });
@@ -241,10 +252,12 @@ describe("decodeStorageEntry", () => {
     const view = decodeStorageEntry(
       {
         key: persistentDataEntry(MOCK_GUARD, "Paused", xdr.ScVal.scvBool(true)).key,
-        val: xdr.LedgerEntryData.ttl(new xdr.TtlEntry({
-          keyHash: new Uint8Array(32),
-          liveUntilLedgerSeq: CURRENT_LEDGER + 4_000,
-        })),
+        val: xdr.LedgerEntryData.ttl(
+          new xdr.TtlEntry({
+            keyHash: new Uint8Array(32),
+            liveUntilLedgerSeq: CURRENT_LEDGER + 4_000,
+          }),
+        ),
         lastModifiedLedgerSeq: CURRENT_LEDGER,
         liveUntilLedgerSeq: CURRENT_LEDGER + 4_000,
       },
@@ -267,10 +280,7 @@ describe("decodeStorageEntry", () => {
 
 describe("storageKeyLabel", () => {
   test("a one-element Vec[Symbol] renders as the bare variant name", () => {
-    assert.equal(
-      storageKeyLabel(xdr.ScVal.scvVec([xdr.ScVal.scvSymbol("Window")])),
-      "Window",
-    );
+    assert.equal(storageKeyLabel(xdr.ScVal.scvVec([xdr.ScVal.scvSymbol("Window")])), "Window");
   });
 
   test("a key this console does not recognise renders as its JSON, whole", () => {
@@ -325,8 +335,6 @@ describe("jsonTree / formatAsJson", () => {
     assert.deepEqual(JSON.parse(text), { total: "9007199254740993", bytes: "01ff" });
   });
 });
-
-
 
 // ── Drawer state ────────────────────────────────────────────────────────────
 

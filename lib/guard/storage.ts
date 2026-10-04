@@ -174,7 +174,8 @@ export function jsonTree(value: unknown, depth = 0): JsonNode {
     return { kind: "bytes", text: toHex(value), bytes: value.byteLength };
   }
   if (depth >= MAX_JSON_DEPTH) return { kind: "truncated", text: "…" };
-  if (Array.isArray(value)) return { kind: "array", items: value.map((item) => jsonTree(item, depth + 1)) };
+  if (Array.isArray(value))
+    return { kind: "array", items: value.map((item) => jsonTree(item, depth + 1)) };
   if (typeof value === "object") {
     const record = value as Record<string, unknown>;
     return {
@@ -535,7 +536,10 @@ export function visibleEntries(state: ExplorerState): StorageEntryView[] {
   const query = state.query.trim().toLowerCase();
   const order: Record<StorageDurability, number> = { instance: 0, persistent: 1, temporary: 2 };
   return state.entries
-    .filter((entry) => state.durabilityFilter.length === 0 || state.durabilityFilter.includes(entry.durability))
+    .filter(
+      (entry) =>
+        state.durabilityFilter.length === 0 || state.durabilityFilter.includes(entry.durability),
+    )
     .filter((entry) => query === "" || entry.label.toLowerCase().includes(query))
     .sort((a, b) => {
       const byDurability = order[a.durability] - order[b.durability];
@@ -550,7 +554,9 @@ export function summarizeEntries(entries: readonly StorageEntryView[]): string {
   const expiring = entries.filter(
     (entry) => entry.ttlTier === "critical" || entry.ttlTier === "expired",
   ).length;
-  const parts = [`${present} of ${entries.length} entr${entries.length === 1 ? "y" : "ies"} present`];
+  const parts = [
+    `${present} of ${entries.length} entr${entries.length === 1 ? "y" : "ies"} present`,
+  ];
   if (expiring > 0) parts.push(`${expiring} at or past its expiration warning`);
   return parts.join(" · ");
 }

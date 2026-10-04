@@ -185,8 +185,8 @@ function EntryRow({
           )}
           {!entry.present && (
             <p className="tiny">
-              <strong>Not initialized.</strong> The ledger holds no value under this key, so
-              there is nothing to decode.
+              <strong>Not initialized.</strong> The ledger holds no value under this key, so there
+              is nothing to decode.
             </p>
           )}
           {entry.present && entry.json !== null && entry.decodeError === null && (
@@ -195,10 +195,7 @@ function EntryRow({
                 <JsonValue node={entry.json} />
               </pre>
               <div className="row" style={{ gap: 6, marginTop: 6 }}>
-                <CopyButton
-                  value={entry.jsonText ?? ""}
-                  label={`${entry.label} value as JSON`}
-                />
+                <CopyButton value={entry.jsonText ?? ""} label={`${entry.label} value as JSON`} />
                 <CopyButton value={entry.valueXdr} label={`${entry.label} value as base64 XDR`} />
                 <CopyButton value={entry.keyXdr} label={`${entry.label} key as base64 XDR`} />
               </div>
@@ -287,9 +284,9 @@ export function StorageExplorer({
       >
         <strong id="storage-explorer-title">Contract storage</strong>
         <p className="tiny muted">
-          Every ledger entry the guard keeps, read with <span className="mono">getLedgerEntries</span>{" "}
-          and decoded from its XDR. Values are what the contract stores, not what a read function
-          reports.
+          Every ledger entry the guard keeps, read with{" "}
+          <span className="mono">getLedgerEntries</span> and decoded from its XDR. Values are what
+          the contract stores, not what a read function reports.
         </p>
 
         <div className="row" style={{ marginTop: 10, gap: 6 }}>
@@ -303,9 +300,7 @@ export function StorageExplorer({
             <button
               key={durability}
               type="button"
-              className={
-                state.durabilityFilter.includes(durability) ? undefined : "secondary"
-              }
+              className={state.durabilityFilter.includes(durability) ? undefined : "secondary"}
               aria-pressed={state.durabilityFilter.includes(durability)}
               onClick={() => dispatch({ type: "toggleDurability", durability })}
             >
@@ -322,9 +317,7 @@ export function StorageExplorer({
 
         <div aria-live="polite" className="tiny muted" style={{ marginTop: 8 }}>
           {state.loading && <Skeleton lines={1} />}
-          {!state.loading && state.error === null && (
-            <span>{summarizeEntries(state.entries)}</span>
-          )}
+          {!state.loading && state.error === null && <span>{summarizeEntries(state.entries)}</span>}
         </div>
 
         {state.error !== null && (
@@ -374,7 +367,9 @@ export function StorageExplorerButton() {
         onClick={() => {
           const nextOpen = !state.open;
           dispatch({ type: "toggle" });
-          announce(nextOpen ? "Contract storage explorer opened" : "Contract storage explorer closed");
+          announce(
+            nextOpen ? "Contract storage explorer opened" : "Contract storage explorer closed",
+          );
         }}
         aria-expanded={state.open}
         data-testid="storage-explorer-toggle"
